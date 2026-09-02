@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "acv": {
+      "command": "${user_config.node_path}",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/integrations/claude-code/acv_claude_mcp_server.mjs"],
+      "env": {
+        "CLAUDE_PLUGIN_ROOT": "${CLAUDE_PLUGIN_ROOT}",
+        "CLAUDE_PLUGIN_DATA": "${CLAUDE_PLUGIN_DATA}",
+        "CLAUDE_PROJECT_DIR": "${CLAUDE_PROJECT_DIR}",
+        "ACV_PYTHON_PATH": "${user_config.python_path}"
+      }
+    }
+  }
+}

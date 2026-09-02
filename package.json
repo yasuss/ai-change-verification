@@ -1,0 +1,12 @@
+{
+  "name": "ai-change-verification",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Vendor-neutral change verification with optional Codex and Claude Code host integrations.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/sandbox-runtime": "0.0.74",
+    "@modelcontextprotocol/sdk": "1.30.0"
+  }
+}

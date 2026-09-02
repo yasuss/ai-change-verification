@@ -1,0 +1,25 @@
+import crypto from "node:crypto";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import { spawn } from "node:child_process";
+import { fileURLToPath } from "node:url";
+import { createRequire } from "node:module";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { z } from "zod";
+const require = createRequire(import.meta.url);
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+const MAX_RESULT_BYTES = 1024 * 1024; const SRT_VERSION = "0.0.74"; const MCP_SDK_VERSION = "1.30.0";
+function fail(reason) { return { capture_status:"UNAVAILABLE", provider_evidence:"NON_AUTHORITATIVE", reason }; }
+function within(candidate, root) { const rel = path.relative(root, candidate); return rel === "" || (!rel.startsWith(".." + path.sep) && rel !== ".." && !path.isAbsolute(rel)); }
+function externalAbsolute(value, subject) { const resolved = fs.realpathSync(value); if (within(resolved, subject)) throw new Error("TRUSTED_PATH_INSIDE_SUBJECT"); return resolved; }
+function currentNodePath(subject) { const nodePath = fs.realpathSync(process.execPath); if (within(nodePath, subject)) throw new Error("TRUSTED_PATH_INSIDE_SUBJECT"); return nodePath; }
+function sha256(file) { return crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex"); }
+function packageVersion(name) { const lock = JSON.parse(fs.readFileSync(path.join(ROOT, "package-lock.json"), "utf8")); return lock.packages?.[`node_modules/${name}`]?.version; }
+function validateRealization() { if (packageVersion("@anthropic-ai/sandbox-runtime") !== SRT_VERSION || packageVersion("@modelcontextprotocol/sdk") !== MCP_SDK_VERSION) throw new Error("DEPENDENCY_REALIZATION_DRIFT"); const r = JSON.parse(fs.readFileSync(path.join(ROOT,"integrations/claude-code/provider-realization.json"),"utf8")); for (const [file, hash] of Object.entries(r.files ?? {})) { const resolved = path.resolve(ROOT,file); if (!within(resolved,ROOT) || sha256(resolved) !== hash) throw new Error("PROVIDER_REALIZATION_DRIFT"); } return r; }
+function fixedPolicy(subject, data) { return { network:{allowedDomains:[]}, filesystem:{allowWrite:[subject,path.join(data,"state"),os.tmpdir()],denyWrite:[path.join(subject,".git")]}, appleEvents:false }; }
+function invokeSrt(receipt, subject, data) { const nodePath = currentNodePath(subject); const pythonPath = externalAbsolute(process.env.ACV_PYTHON_PATH, subject); if (!fs.existsSync(nodePath) || !fs.existsSync(pythonPath)) throw new Error("OPERATOR_RUNTIME_INVALID"); const srt = require.resolve("@anthropic-ai/sandbox-runtime/dist/cli.js"); const state = path.join(data,"state"); fs.mkdirSync(state,{recursive:true}); const policy = path.join(state,`policy-${crypto.randomUUID()}.json`); fs.writeFileSync(policy,JSON.stringify(fixedPolicy(subject,data)),{encoding:"utf8",flag:"wx"}); const bridge = path.join(ROOT,"integrations/claude-code/acv_claude_bridge.py"); const args = [srt,"-s",policy,pythonPath,bridge,"--receipt",receipt]; return new Promise((resolve)=>{ const child=spawn(nodePath,args,{cwd:subject,shell:false,env:{...process.env,CLAUDE_PROJECT_DIR:subject,CLAUDE_PLUGIN_ROOT:ROOT,CLAUDE_PLUGIN_DATA:data,ACV_PYTHON_PATH:pythonPath},stdio:["ignore","pipe","pipe"]}); let out=Buffer.alloc(0); child.stdout.on("data",b=>{out=Buffer.concat([out,b]).subarray(0,MAX_RESULT_BYTES);}); child.on("error",()=>resolve(fail("SRT_UNAVAILABLE"))); child.on("close",code=>{try{if(code!==0)return resolve(fail("SRT_PROVIDER_FAILURE"));const result=JSON.parse(out.toString("utf8"));if(!result||result.capture_status!=="COMPLETE")return resolve(fail("MALFORMED_BRIDGE_OUTPUT"));resolve(result);}catch{resolve(fail("MALFORMED_BRIDGE_OUTPUT"));}finally{try{fs.unlinkSync(policy);}catch{}}}); }); }
+const server = new McpServer({name:"ai-change-verification-claude",version:"0.1.0"});
+server.registerTool("verify_receipt",{description:"Validate one receipt inside the current project and return canonical ACV evidence.",inputSchema:{receipt_path:z.string().min(1).describe("Receipt path inside the current project")}},async({receipt_path})=>{try{if(!process.env.CLAUDE_PROJECT_DIR||!process.env.CLAUDE_PLUGIN_DATA||!process.env.ACV_PYTHON_PATH)throw new Error("OPERATOR_RUNTIME_CONFIGURATION_MISSING");const subject=path.resolve(process.env.CLAUDE_PROJECT_DIR);const data=externalAbsolute(process.env.CLAUDE_PLUGIN_DATA,subject);const receipt=path.resolve(subject,receipt_path);const realReceipt=fs.realpathSync(receipt);if(!within(realReceipt,subject)||!fs.statSync(realReceipt).isFile())return{content:[{type:"text",text:JSON.stringify(fail("RECEIPT_OUTSIDE_PROJECT"))}],isError:true};validateRealization();const result=await invokeSrt(realReceipt,subject,data);return{content:[{type:"text",text:JSON.stringify(result)}],isError:result.provider_evidence==="NON_AUTHORITATIVE"};}catch(error){return{content:[{type:"text",text:JSON.stringify(fail(error instanceof Error?error.message:"PROVIDER_FAILURE"))}],isError:true};}});
+await server.connect(new StdioServerTransport());

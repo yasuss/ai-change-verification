@@ -1,0 +1,11 @@
+{
+  "format": "ACV_STAGE_B_CORE_REALIZATION_MANIFEST_V1",
+  "domain": "ACV-STAGE-B-CORE-REALIZATION-v1",
+  "files": [
+    {"path": "scripts/finalize_verification.py", "role": "stage_b_authority"},
+    {"path": "scripts/validate_receipt.py", "role": "stage_a_decision_validator"},
+    {"path": "scripts/change_snapshot.py", "role": "subject_snapshot"},
+    {"path": "schemas/verification-receipt.schema.json", "role": "receipt_schema"},
+    {"path": "references/stage-b-live-verification.md", "role": "normative_stage_b_contract"}
+  ]
+}

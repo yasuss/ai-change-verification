@@ -1,0 +1,23 @@
+{
+  "name": "ai-change-verification",
+  "description": "Vendor-neutral change verification with an optional trusted Claude Code provider.",
+  "version": "0.1.0",
+  "author": { "name": "yasuss" },
+  "homepage": "https://github.com/yasuss/ai-change-verification",
+  "repository": "https://github.com/yasuss/ai-change-verification",
+  "license": "Apache-2.0",
+  "userConfig": {
+    "node_path": {
+      "type": "file",
+      "title": "Node executable",
+      "description": "Absolute path to the operator-selected Node executable used to launch the trusted provider.",
+      "required": true
+    },
+    "python_path": {
+      "type": "file",
+      "title": "Python executable",
+      "description": "Absolute path to the operator-selected Python executable used by the canonical bridge.",
+      "required": true
+    }
+  }
+}

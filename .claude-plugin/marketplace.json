@@ -1,0 +1,8 @@
+{
+  "name": "ai-change-verification",
+  "owner": { "name": "yasuss" },
+  "metadata": { "description": "Change verification for AI-assisted engineering.", "version": "0.1.0" },
+  "plugins": [
+    { "name": "ai-change-verification", "source": "./" }
+  ]
+}

@@ -1,0 +1,28 @@
+name: public-product
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: Run deterministic Python checks
+        run: python -B -m unittest discover -s tests -p 'test_*.py'
+      - name: Install locked Node dependencies
+        run: npm ci --ignore-scripts
+      - name: Check Claude MCP syntax
+        run: node --check integrations/claude-code/acv_claude_mcp_server.mjs

@@ -1,0 +1,19 @@
+{
+  "format": "ACV_CLAUDE_PROVIDER_REALIZATION_V1",
+  "plugin_realization_id": "acv-claude-code-0.1.0",
+  "srt_version": "0.0.74",
+  "mcp_sdk_version": "1.30.0",
+  "files": {
+    ".claude-plugin/plugin.json": "035670d96da14d403d3ba2dc0fe64a7587df562ebd811361d4bc13578b6b57ae",
+    ".mcp.json": "4a5ac5bf893419cc524042c8f491438421e3f9152fa6103bbd7e05ca0c2d281e",
+    "package.json": "d267e73c0f192c806e6cd30b0c63482bb791602d6c98863b7dda6d16df26461f",
+    "package-lock.json": "6d2038b281c537cf5440a78ecf39458242680ddb041ccdbf81b73765ed8f928f",
+    "integrations/claude-code/acv_claude_mcp_server.mjs": "4cd527032d254691129cad2281940cd8552feaab56831facbceb9ce26385f487",
+    "integrations/claude-code/acv_claude_bridge.py": "6c752422da2f995c4f0ad9845979c580e56063d0d172f1f28fb863dd56cbca04",
+    "integrations/codex-app-server/setup_provider.py": "045c20e3d1063b32ccf845f4e74caff3200109d1d28000d8677a156b7163f905",
+    "integrations/claude-code/setup_windows_sandbox.mjs": "99950c50ac9fbc61c1a40d6dc0f933d44680b55016a6d42b7e74c48c7fd46b74"
+  },
+  "trusted_state_root": "${CLAUDE_PLUGIN_DATA}/state",
+  "subject_root_source": "${CLAUDE_PROJECT_DIR}",
+  "compatibility": "EXPECTED_NOT_YET_INDEPENDENTLY_USER_TESTED_ON_MACOS_OR_CLAUDE"
+}

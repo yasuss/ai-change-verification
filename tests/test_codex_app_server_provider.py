@@ -139,7 +139,7 @@ class ProviderContractTests(unittest.TestCase):
             subject = root / "subject"
             subject.mkdir()
             with patch.object(setup, "resolve_codex_path", return_value=EXE), patch.object(setup, "platform_profile", return_value=("windows", "windows")):
-                with self.assertRaisesRegex(setup.SetupError, "WINDOWS_TRUSTED_REALIZATION_NOT_VERIFIED_V0_1_0"):
+                with self.assertRaisesRegex(setup.SetupError, "WINDOWS_TRUSTED_REALIZATION_NOT_VERIFIED_V0_2_0"):
                     setup.enroll(codex_path=str(EXE), provider_dir=provider_dir, subject_root=subject)
             self.assertFalse(provider_dir.exists())
 
@@ -147,7 +147,7 @@ class ProviderContractTests(unittest.TestCase):
         install_temp, _, provider_dir, profile = install_provider()
         target_temp, target = make_target()
         try:
-            with self.assertRaisesRegex(provider.UnsupportedProviderRealization, "WINDOWS_TRUSTED_REALIZATION_NOT_VERIFIED_V0_1_0"):
+            with self.assertRaisesRegex(provider.UnsupportedProviderRealization, "WINDOWS_TRUSTED_REALIZATION_NOT_VERIFIED_V0_2_0"):
                 provider.CodexProvider(provider_dir)._realization(target)
         finally:
             target_temp.cleanup(); install_temp.cleanup()
@@ -162,15 +162,15 @@ class ProviderContractTests(unittest.TestCase):
                 def __init__(self, *args, **kwargs):
                     raise AssertionError("selected command path reached before Branch B refusal")
             provider.AppServerClient = BombClient
-            with self.assertRaisesRegex(provider.UnsupportedProviderRealization, "WINDOWS_TRUSTED_REALIZATION_NOT_VERIFIED_V0_1_0"):
+            with self.assertRaisesRegex(provider.UnsupportedProviderRealization, "WINDOWS_TRUSTED_REALIZATION_NOT_VERIFIED_V0_2_0"):
                 provider.CodexProvider(provider_dir).run(receipt, target, pathlib.Path(install_temp.name) / "state")
         finally:
             provider.AppServerClient = original_client
             target_temp.cleanup(); install_temp.cleanup()
 
     def test_branch_b_source_has_no_automatic_sandbox_provisioning(self):
-        self.assertIn("WINDOWS_TRUSTED_REALIZATION_NOT_VERIFIED_V0_1_0", SETUP_SOURCE.read_text(encoding="utf-8"))
-        self.assertIn("WINDOWS_TRUSTED_REALIZATION_NOT_VERIFIED_V0_1_0", SOURCE.read_text(encoding="utf-8"))
+        self.assertIn("WINDOWS_TRUSTED_REALIZATION_NOT_VERIFIED_V0_2_0", SETUP_SOURCE.read_text(encoding="utf-8"))
+        self.assertIn("WINDOWS_TRUSTED_REALIZATION_NOT_VERIFIED_V0_2_0", SOURCE.read_text(encoding="utf-8"))
         self.assertNotIn("windowsSandbox/setupStart", SETUP_SOURCE.read_text(encoding="utf-8"))
 
     def test_runtime_availability_is_presence_only(self):

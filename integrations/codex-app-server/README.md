@@ -4,7 +4,7 @@ This is an optional host adapter. It is installed outside the subject repository
 and submits only validated `COMMAND_EXECUTION` contracts to the exact adjacent
 Codex App Server runtime. The portable ACV Core remains unchanged.
 
-For v0.1.0, the Windows trusted-host realization is documented as EXPECTED /
+For v0.2.0, the Windows trusted-host realization is documented as EXPECTED /
 not independently host-verified. Authoritative Windows enrollment is not part
 of this release. Portable Core remains usable without this adapter.
 

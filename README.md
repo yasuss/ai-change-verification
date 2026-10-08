@@ -46,7 +46,7 @@ Copy `skills/ai-change-verification/` to `<project>/.claude/skills/ai-change-ver
 
 ### Full Claude provider
 
-> v0.1.0 Claude host lanes are EXPECTED / not independently host-verified.
+> v0.2.0 Claude host lanes are EXPECTED / not independently host-verified.
 
 ```bash
 claude plugin marketplace add yasuss/ai-change-verification
@@ -57,7 +57,7 @@ Claude Code prompts for the operator-owned `node_path` and `python_path` through
 
 ## Optional hosts
 
-- [Codex App Server](docs/codex.md): an optional adapter; the Windows trusted-host realization is documented as EXPECTED for v0.1.0.
+- [Codex App Server](docs/codex.md): an optional adapter; the Windows trusted-host realization is documented as EXPECTED for v0.2.0.
 - [Claude Code](docs/claude-code.md): a narrow receipt-only stdio MCP provider with pinned sandbox runtime; macOS and native Windows are expected lanes. Native Windows uses the alpha SRT lane, not Claude Code's built-in sandbox.
 
 The skill itself has no Codex or Claude dependency. The Claude plugin reuses this canonical skill and does not duplicate it.
@@ -68,12 +68,12 @@ See the [before/after example](examples/before-after/README.md).
 
 ## Compatibility
 
-**TESTED for v0.1.0**
+**TESTED for v0.2.0**
 - Portable Core — Ubuntu CI
 
 **EXPECTED / not independently host-verified**
 - Codex App Server — Windows trusted-host realization
-  *(authoritative enrollment is not enabled in v0.1.0)*
+  *(authoritative enrollment is not enabled in v0.2.0)*
 - macOS lanes
 - Claude Code host lanes
 

@@ -22,9 +22,9 @@ It needs Node/npm only while installing; portable ACV does not. Without Node/npm
 
 The Codex App Server adapter is optional. Install Python and a compatible local Codex App Server only if you need this host integration. Run `integrations/codex-app-server/setup_provider.py` from outside the inspected subject repository with an operator-selected Codex executable and an external provider directory.
 
-For v0.1.0, the Codex App Server Windows trusted-host realization is documented as EXPECTED rather than TESTED. Portable Core usage on Windows is unaffected. macOS and other non-Windows lanes are also expected until independent host evidence exists. The target repository cannot choose the provider binary, profile, identity, or state directory.
+For v0.2.0, the Codex App Server Windows trusted-host realization is documented as EXPECTED rather than TESTED. Portable Core usage on Windows is unaffected. macOS and other non-Windows lanes are also expected until independent host evidence exists. The target repository cannot choose the provider binary, profile, identity, or state directory.
 
-Portable Core remains usable without Codex. v0.1.0 does not expose an authoritative Windows trusted-host enrollment. Do not treat an old Windows provider profile as an authoritative v0.1.0 realization.
+Portable Core remains usable without Codex. v0.2.0 does not expose an authoritative Windows trusted-host enrollment. Do not treat an old Windows provider profile as an authoritative v0.2.0 realization.
 
 ## Claude Code provider
 

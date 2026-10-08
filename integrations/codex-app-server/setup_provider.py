@@ -18,7 +18,7 @@ from typing import Any, Mapping
 
 APP_SERVER_TIMEOUT = 60
 MAX_PROBE_OUTPUT = 4096
-WINDOWS_TRUSTED_REALIZATION_NOT_VERIFIED_V0_1_0 = "WINDOWS_TRUSTED_REALIZATION_NOT_VERIFIED_V0_1_0"
+WINDOWS_TRUSTED_REALIZATION_NOT_VERIFIED_V0_2_0 = "WINDOWS_TRUSTED_REALIZATION_NOT_VERIFIED_V0_2_0"
 SCHEMA_DIGEST_EXCLUDED_PATHS = {"json/codex_app_server_protocol.v2.schemas.json"}
 SCHEMA_DIGEST_ALGORITHM = "SHA256(UTF-8 concatenation of sorted relative_path + NUL + per-file-sha256 + LF; excluding exactly json/codex_app_server_protocol.v2.schemas.json)"
 
@@ -247,7 +247,7 @@ def enroll(*, codex_path: str | None, provider_dir: pathlib.Path, subject_root: 
     if _inside(provider_dir, subject_root): raise SetupError("PROVIDER_INSTALL_INSIDE_SUBJECT")
     family, os_name = platform_profile()
     if family == "windows":
-        raise SetupError(WINDOWS_TRUSTED_REALIZATION_NOT_VERIFIED_V0_1_0)
+        raise SetupError(WINDOWS_TRUSTED_REALIZATION_NOT_VERIFIED_V0_2_0)
     provider_dir.mkdir(parents=True, exist_ok=True)
     profile_path = provider_dir / "provider_profile.json"
     if profile_path.exists() and not replace: raise SetupError("TRUSTED_PROFILE_EXISTS_USE_REPLACE")

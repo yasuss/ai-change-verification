@@ -6,7 +6,7 @@ ACV does not merge, push or deploy by default. It does not make model output aut
 
 The Claude sandbox runtime is pinned but research-preview software; its native-Windows support is alpha. Claude Code's built-in sandbox does not support native Windows, so ACV uses its separately pinned SRT dependency instead. Independent macOS, Claude/macOS, and Claude/native-Windows installation evidence is deferred. Synthetic checks and CI must not be read as real host evidence.
 
-The Codex App Server Windows trusted-host realization is EXPECTED / not independently host-verified for v0.1.0. Portable Core remains available and does not require Codex.
+The Codex App Server Windows trusted-host realization is EXPECTED / not independently host-verified for v0.2.0. Portable Core remains available and does not require Codex.
 
 Stage B durable authority is bounded to the supported local SQLite/WAL/VFS profile. Network-share and unknown mapped-storage locations are not granted the same durability claim. Currentness is a point-in-time result of the canonical decision head, current subject, authority and policy identities, persisted provenance, and acquisition state. A new acquisition, interrupted/unknown attempt, legacy state, or same-subject trusted negative lineage requires fresh verification; a presentation result cannot upgrade it.
 

@@ -1,15 +1,15 @@
 # Compatibility
 
-**TESTED for v0.1.0**
+**TESTED for v0.2.0**
 - Portable Core — Ubuntu CI
 
 **EXPECTED / not independently host-verified**
 - Codex App Server — Windows trusted-host realization
-  *(authoritative enrollment is not enabled in v0.1.0)*
+  *(authoritative enrollment is not enabled in v0.2.0)*
 - macOS lanes
 - Claude Code host lanes
 
-These classifications describe compatibility evidence for v0.1.0; they are not security certifications.
+These classifications describe compatibility evidence for v0.2.0; they are not security certifications.
 
 See [Quick Start](quick-start.md) and [Limitations](limitations.md) for setup details and boundaries.
 

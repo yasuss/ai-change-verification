@@ -1,6 +1,6 @@
 {
   "name": "ai-change-verification",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Vendor-neutral change verification with optional Codex and Claude Code host integrations.",
   "license": "Apache-2.0",

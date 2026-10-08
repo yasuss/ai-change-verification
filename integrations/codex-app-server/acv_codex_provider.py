@@ -24,7 +24,7 @@ from typing import Any, Iterable, Mapping, Optional
 
 PROVIDER_VERSION = "1"
 PROVIDER_KIND = "ACV_CODEX_APP_SERVER_COMMAND_EXEC_V1"
-WINDOWS_TRUSTED_REALIZATION_NOT_VERIFIED_V0_1_0 = "WINDOWS_TRUSTED_REALIZATION_NOT_VERIFIED_V0_1_0"
+WINDOWS_TRUSTED_REALIZATION_NOT_VERIFIED_V0_2_0 = "WINDOWS_TRUSTED_REALIZATION_NOT_VERIFIED_V0_2_0"
 SCHEMA_DIGEST_EXCLUDED_PATHS = {"json/codex_app_server_protocol.v2.schemas.json"}
 SCHEMA_DIGEST_ALGORITHM = "SHA256(UTF-8 concatenation of sorted relative_path + NUL + per-file-sha256 + LF; excluding exactly json/codex_app_server_protocol.v2.schemas.json)"
 MAX_PROTOCOL_LINE_BYTES = 4 * 1024 * 1024
@@ -430,7 +430,7 @@ class CodexProvider:
             raise ProviderError("PROFILE_INVALID")
         validate_profile(profile)
         if profile["platformFamily"] == "windows":
-            raise UnsupportedProviderRealization(WINDOWS_TRUSTED_REALIZATION_NOT_VERIFIED_V0_1_0)
+            raise UnsupportedProviderRealization(WINDOWS_TRUSTED_REALIZATION_NOT_VERIFIED_V0_2_0)
         expected_source = profile.get("provider_source_sha256")
         if expected_source is not None and sha256_file(self.provider_dir / "acv_codex_provider.py") != expected_source:
             raise UnsupportedProviderRealization("PROVIDER_SOURCE_HASH_MISMATCH")

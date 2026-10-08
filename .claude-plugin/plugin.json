@@ -1,7 +1,7 @@
 {
   "name": "ai-change-verification",
   "description": "Vendor-neutral change verification with an optional trusted Claude Code provider.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": { "name": "yasuss" },
   "homepage": "https://github.com/yasuss/ai-change-verification",
   "repository": "https://github.com/yasuss/ai-change-verification",

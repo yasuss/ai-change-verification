@@ -16,8 +16,8 @@ Security fixes are provided for the latest public release.
 
 | Version | Supported |
 | --- | --- |
-| 0.1.x | Yes |
-| Earlier / unreleased versions | No |
+| 0.2.x | Yes |
+| 0.1.x and earlier / unreleased versions | No |
 
 ## Reporting a vulnerability
 

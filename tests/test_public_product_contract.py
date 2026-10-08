@@ -36,8 +36,8 @@ jobs:
       - name: Check Claude MCP syntax
         run: node --check integrations/claude-code/acv_claude_mcp_server.mjs
 """
-EXPECTED_DOCS_SHA = "b6ccb1e810096484f1c0dcd38e539ecd20cf32cebc063fdb42fdc1931e1a0fe5"
-EXPECTED_SECURITY_SHA = "f8ffe559db66924144505c25ab8124729e043e204927309a8073199dd373db9a"
+EXPECTED_DOCS_SHA = "e623c9d9870e25b328b8bd42be60d9028b8f062383932e1af7847376b4976a9b"
+EXPECTED_SECURITY_SHA = "52554f70e7dba3fc98593e3c9a814e684097f8c17424d9bd02769480df14b239"
 FORBIDDEN_INTERNAL_VOCABULARY = re.compile(r"(?i)(?<![A-Za-z])(?:M-[A-Z]+-\d+|H\d+|RC|verifier[- ]of[- ]verifier|hostile|circuit[- ]breaker)(?![A-Za-z])")
 
 
@@ -75,12 +75,12 @@ class PublicProductContractTests(unittest.TestCase):
         self.assertEqual(text.count(EXPECTED_BADGE), 1)
         compatibility = """## Compatibility
 
-**TESTED for v0.1.0**
+**TESTED for v0.2.0**
 - Portable Core — Ubuntu CI
 
 **EXPECTED / not independently host-verified**
 - Codex App Server — Windows trusted-host realization
-  *(authoritative enrollment is not enabled in v0.1.0)*
+  *(authoritative enrollment is not enabled in v0.2.0)*
 - macOS lanes
 - Claude Code host lanes
 
@@ -102,7 +102,7 @@ See [Compatibility details](docs/compatibility.md), [Quick Start](docs/quick-sta
         path = PUBLIC / "docs/compatibility.md"
         self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), EXPECTED_DOCS_SHA)
         text = path.read_text(encoding="utf-8")
-        self.assertEqual(text.count("**TESTED for v0.1.0**"), 1)
+        self.assertEqual(text.count("**TESTED for v0.2.0**"), 1)
         self.assertEqual(text.count("**EXPECTED / not independently host-verified**"), 1)
         self.assertIn("- Codex App Server — Windows trusted-host realization", text)
         self.assertNotIn("Codex App Server — Windows, exact enrolled runtime", text)
@@ -114,8 +114,8 @@ See [Compatibility details](docs/compatibility.md), [Quick Start](docs/quick-sta
         codex = (PUBLIC / "docs/codex.md").read_text(encoding="utf-8")
         setup = (PUBLIC / "integrations/codex-app-server/setup_provider.py").read_text(encoding="utf-8")
         provider = (PUBLIC / "integrations/codex-app-server/acv_codex_provider.py").read_text(encoding="utf-8")
-        marker = "WINDOWS_TRUSTED_REALIZATION_NOT_VERIFIED_V0_1_0"
-        self.assertIn("- Codex App Server — Windows trusted-host realization\n  *(authoritative enrollment is not enabled in v0.1.0)*", readme)
+        marker = "WINDOWS_TRUSTED_REALIZATION_NOT_VERIFIED_V0_2_0"
+        self.assertIn("- Codex App Server — Windows trusted-host realization\n  *(authoritative enrollment is not enabled in v0.2.0)*", readme)
         self.assertIn("Windows trusted-host realization is documented as EXPECTED", quick_start)
         self.assertIn("Windows trusted-host realization is EXPECTED / not independently host-verified", codex)
         self.assertNotIn(marker, quick_start)
@@ -127,7 +127,7 @@ See [Compatibility details](docs/compatibility.md), [Quick Start](docs/quick-sta
 
     def test_claude_warning_is_adjacent_to_install_block(self):
         text = (PUBLIC / "README.md").read_text(encoding="utf-8")
-        warning = "> v0.1.0 Claude host lanes are EXPECTED / not independently host-verified."
+        warning = "> v0.2.0 Claude host lanes are EXPECTED / not independently host-verified."
         command = "claude plugin marketplace add yasuss/ai-change-verification"
         self.assertEqual(text.count(warning), 1)
         self.assertEqual(text.count(command), 1)
@@ -139,7 +139,7 @@ See [Compatibility details](docs/compatibility.md), [Quick Start](docs/quick-sta
             PUBLIC / "docs/codex.md", PUBLIC / "docs/limitations.md",
             PUBLIC / "integrations/codex-app-server/README.md",
         ]
-        forbidden = re.compile(r"(?i)(fail.?closed|qualification (?:failed|did not complete)|did not complete successfully|release[- ]host|could not complete|CreateRestrictedToken failed|RestrictedToken|(?:R3|R4|R5|R6) recovery|WINDOWS_TRUSTED_REALIZATION_NOT_VERIFIED_V0_1_0)")
+        forbidden = re.compile(r"(?i)(fail.?closed|qualification (?:failed|did not complete)|did not complete successfully|release[- ]host|could not complete|CreateRestrictedToken failed|RestrictedToken|(?:R3|R4|R5|R6) recovery|WINDOWS_TRUSTED_REALIZATION_NOT_VERIFIED_V0_2_0)")
         for path in surfaces:
             self.assertIsNone(forbidden.search(path.read_text(encoding="utf-8")), str(path))
 
@@ -202,6 +202,21 @@ See [Compatibility details](docs/compatibility.md), [Quick Start](docs/quick-sta
         self.assertEqual(lock["packages"][""]["dependencies"], expected)
         self.assertEqual(lock["packages"]["node_modules/@anthropic-ai/sandbox-runtime"]["version"], "0.0.74")
         self.assertEqual(lock["packages"]["node_modules/@modelcontextprotocol/sdk"]["version"], "1.30.0")
+
+    def test_release_version_is_consistent_across_public_surfaces(self):
+        package = json.loads((PUBLIC / "package.json").read_text(encoding="utf-8"))
+        lock = json.loads((PUBLIC / "package-lock.json").read_text(encoding="utf-8"))
+        plugin = json.loads((PUBLIC / ".claude-plugin/plugin.json").read_text(encoding="utf-8"))
+        marketplace = json.loads((PUBLIC / ".claude-plugin/marketplace.json").read_text(encoding="utf-8"))
+        realization = json.loads((PUBLIC / "integrations/claude-code/provider-realization.json").read_text(encoding="utf-8"))
+        mcp = (PUBLIC / "integrations/claude-code/acv_claude_mcp_server.mjs").read_text(encoding="utf-8")
+        self.assertEqual(package["version"], "0.2.0")
+        self.assertEqual(lock["version"], "0.2.0")
+        self.assertEqual(lock["packages"][""]["version"], "0.2.0")
+        self.assertEqual(plugin["version"], "0.2.0")
+        self.assertEqual(marketplace["metadata"]["version"], "0.2.0")
+        self.assertEqual(realization["plugin_realization_id"], "acv-claude-code-0.2.0")
+        self.assertIn('version:"0.2.0"', mcp)
 
     def test_canonical_skill_is_vendor_neutral(self):
         skill = (PUBLIC / "skills/ai-change-verification/SKILL.md").read_text(encoding="utf-8").lower()
